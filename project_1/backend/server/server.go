@@ -9,5 +9,7 @@ type Server struct {
 func New() *Server {
 	r := gin.Default()
 
+	r.GET("/healthcheck", healthcheck)
+
 	return &Server{r}
 }
