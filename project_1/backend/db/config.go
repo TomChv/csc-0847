@@ -3,6 +3,7 @@ package db
 import (
 	"github.com/joho/godotenv"
 	"log"
+	"os"
 
 	"github.com/TomChv/csc-0847/project_1/backend/utils"
 )
@@ -19,8 +20,11 @@ var (
 )
 
 func init() {
-	if err := godotenv.Load(configPath); err != nil {
-		log.Fatalln(err)
+	// Ignore dotenv loading on CI
+	if os.Getenv("CI") == "false" {
+		if err := godotenv.Load(configPath); err != nil {
+			log.Fatalln(err)
+		}
 	}
 
 	host = utils.ForceGetEnv("DB_HOST")
