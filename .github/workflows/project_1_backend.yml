@@ -14,6 +14,13 @@ jobs:
   postman_unit_test:
     name: Postman Tests
     runs-on: ubuntu-latest
+    env:
+      DB_NAME: "github-action"
+      DB_HOST: "localhost"
+      DB_PORT: "5432"
+      DB_USER: "github"
+      DB_PASSWORD: "xMorPOhdQLRJ"
+      DB_PROVIDER: "local"
 
     steps:
       - name: Checkout repository.
@@ -27,8 +34,11 @@ jobs:
       - name: Build backend binary
         run: go build -o backend main.go
 
-      - name: Run backend
-        run: ./backend server &
+      - name: Run backend and database
+        run: |
+          docker compose -f docker-compose.local.yml up -d
+          ./utils/script/wait-for-it.sh -h $DB_HOST -p $DB_PORT -- sleep 10
+          ./backend server &
       
       - name: Install Postman CLI
         run: |

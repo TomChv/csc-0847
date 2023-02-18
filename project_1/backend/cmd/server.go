@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/TomChv/csc-0847/project_1/backend/db"
 	"github.com/TomChv/csc-0847/project_1/backend/server"
 )
 
@@ -18,7 +19,12 @@ var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: "Run project 1 backend server",
 	Run: func(cmd *cobra.Command, args []string) {
-		s := server.New()
+		c, err := db.New()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		s := server.New(c)
 
 		// Format URL
 		url := fmt.Sprintf("%s:%s", host, port)
