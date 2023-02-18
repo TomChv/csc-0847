@@ -12,7 +12,7 @@ type Client struct {
 }
 
 func New() (*Client, error) {
-	fmt.Printf("database configuration retrieved with provider: %s\n", provider)
+	fmt.Printf("database configuration retrieved with provider: %s on %s:%s\n", provider, host, port)
 
 	providerFunc, exist := providers[provider]
 	if !exist || providerFunc == nil {
