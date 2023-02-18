@@ -11,6 +11,18 @@ const (
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldStudentID holds the string denoting the student_id field in the database.
+	FieldStudentID = "student_id"
+	// FieldFirstname holds the string denoting the firstname field in the database.
+	FieldFirstname = "firstname"
+	// FieldLastname holds the string denoting the lastname field in the database.
+	FieldLastname = "lastname"
+	// FieldEmail holds the string denoting the email field in the database.
+	FieldEmail = "email"
+	// FieldMailingAddress holds the string denoting the mailing_address field in the database.
+	FieldMailingAddress = "mailing_address"
+	// FieldGpa holds the string denoting the gpa field in the database.
+	FieldGpa = "gpa"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 )
@@ -18,6 +30,12 @@ const (
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
+	FieldStudentID,
+	FieldFirstname,
+	FieldLastname,
+	FieldEmail,
+	FieldMailingAddress,
+	FieldGpa,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -31,6 +49,10 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	EmailValidator func(string) error
+	// GpaValidator is a validator for the "gpa" field. It is called by the builders before save.
+	GpaValidator func(int) error
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )

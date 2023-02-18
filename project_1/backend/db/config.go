@@ -19,7 +19,7 @@ var (
 	provider Provider
 )
 
-func init() {
+func loadConfig() {
 	// Ignore dotenv loading on CI
 	if os.Getenv("CI") == "false" {
 		if err := godotenv.Load(configPath); err != nil {
@@ -27,11 +27,16 @@ func init() {
 		}
 	}
 
-	host = utils.ForceGetEnv("DB_HOST")
-	port = utils.ForceGetEnv("DB_PORT")
-	name = utils.ForceGetEnv("DB_NAME")
-	user = utils.ForceGetEnv("DB_USER")
-	password = utils.ForceGetEnv("DB_PASSWORD")
+	// Ignore those variables during unit tests
+	// because we are using a SQLite3 database.
+	if os.Getenv("UNIT_TEST") == "" {
+		host = utils.ForceGetEnv("DB_HOST")
+		port = utils.ForceGetEnv("DB_PORT")
+		name = utils.ForceGetEnv("DB_NAME")
+		user = utils.ForceGetEnv("DB_USER")
+		password = utils.ForceGetEnv("DB_PASSWORD")
+	}
+
 	_provider, err := stringToProvider(utils.ForceGetEnv("DB_PROVIDER"))
 	if err != nil {
 		log.Fatalln(err)
