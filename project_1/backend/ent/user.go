@@ -6,15 +6,15 @@ import (
 	"fmt"
 	"strings"
 
-	"entgo.io/ent/dialect/sql"
 	"github.com/TomChv/csc-0847/project_1/backend/ent/user"
+	"github.com/google/uuid"
 )
 
 // User is the model entity for the User schema.
 type User struct {
 	config
 	// ID of the ent.
-	ID int `json:"id,omitempty"`
+	ID uuid.UUID `json:"id,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -23,7 +23,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	for i := range columns {
 		switch columns[i] {
 		case user.FieldID:
-			values[i] = new(sql.NullInt64)
+			values[i] = new(uuid.UUID)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type User", columns[i])
 		}
@@ -40,11 +40,11 @@ func (u *User) assignValues(columns []string, values []any) error {
 	for i := range columns {
 		switch columns[i] {
 		case user.FieldID:
-			value, ok := values[i].(*sql.NullInt64)
-			if !ok {
-				return fmt.Errorf("unexpected type %T for field id", value)
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field id", values[i])
+			} else if value != nil {
+				u.ID = *value
 			}
-			u.ID = int(value.Int64)
 		}
 	}
 	return nil
