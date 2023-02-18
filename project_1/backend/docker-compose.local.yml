@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  database:
+    image: bitnami/postgresql:15.2.0
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      # source envs/database.env
+      POSTGRESQL_DATABASE: "${DB_NAME}"
+      POSTGRESQL_USER: "${DB_USER}"
+      POSTGRESQL_PASSWORD: "${DB_PASSWORD}"

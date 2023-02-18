@@ -3,3 +3,6 @@
 
 # Binary
 backend
+
+# Environment
+**/*.env
