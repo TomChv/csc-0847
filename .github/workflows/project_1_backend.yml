@@ -37,7 +37,7 @@ jobs:
       - name: Run backend and database
         run: |
           docker compose -f docker-compose.local.yml up -d
-          ./utils/script/wait-for-it.sh -h $DB_HOST -p $DB_PORT
+          ./utils/script/wait-for-it.sh -h $DB_HOST -p $DB_PORT -- sleep 10
           ./backend server &
       
       - name: Install Postman CLI
