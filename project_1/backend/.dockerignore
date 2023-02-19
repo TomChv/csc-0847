@@ -1,0 +1,13 @@
+# Git
+.gitignore
+.dockerignore
+
+# Docker
+Dockerfile
+docker-compose*.yml
+
+# Binary
+backend
+
+# Linter
+.golangci.yml
