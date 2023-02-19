@@ -16,5 +16,7 @@ func New(c *db.Client) *Server {
 
 	r.GET("/healthcheck", healthcheck)
 
+	BindUserController(c, r.RouterGroup)
+
 	return &Server{r, c}
 }
