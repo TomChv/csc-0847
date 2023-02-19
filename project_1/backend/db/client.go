@@ -12,6 +12,9 @@ type Client struct {
 }
 
 func New() (*Client, error) {
+	// Load configuration
+	loadConfig()
+
 	fmt.Printf("database configuration retrieved with provider: %s on %s:%s\n", provider, host, port)
 
 	providerFunc, exist := providers[provider]
@@ -32,5 +35,5 @@ func New() (*Client, error) {
 }
 
 func (c *Client) Close() error {
-	return c.Close()
+	return c.Client.Close()
 }

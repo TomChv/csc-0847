@@ -52,4 +52,19 @@ jobs:
           postman collection run "10575948-64a485ca-2331-4b65-b3e7-76f67ed3c7f0" -e "10575948-0635068e-564d-4e80-bec1-2771e20fd951" --integration-id "133506-${{ github.run_id }}"
           # Lint your API using Postman CLI
           postman api lint --integration-id 133506        
-            
+
+  go_unit_test:
+    name: Go Unit Test Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository.
+        uses: actions/checkout@v3
+
+      - name: Setup golang
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.20'
+
+      - name: Run tests
+        run: go test -v -race ./...

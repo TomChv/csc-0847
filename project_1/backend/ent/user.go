@@ -6,15 +6,28 @@ import (
 	"fmt"
 	"strings"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/TomChv/csc-0847/project_1/backend/ent/user"
 	"github.com/google/uuid"
 )
 
 // User is the model entity for the User schema.
 type User struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID uuid.UUID `json:"id,omitempty"`
+	// StudentID holds the value of the "student_id" field.
+	StudentID string `json:"student_id,omitempty"`
+	// Firstname holds the value of the "firstname" field.
+	Firstname string `json:"firstname,omitempty"`
+	// Lastname holds the value of the "lastname" field.
+	Lastname string `json:"lastname,omitempty"`
+	// Email holds the value of the "email" field.
+	Email string `json:"email,omitempty"`
+	// MailingAddress holds the value of the "mailing_address" field.
+	MailingAddress string `json:"mailing_address,omitempty"`
+	// Gpa holds the value of the "gpa" field.
+	Gpa int `json:"gpa,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -22,6 +35,10 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case user.FieldGpa:
+			values[i] = new(sql.NullInt64)
+		case user.FieldStudentID, user.FieldFirstname, user.FieldLastname, user.FieldEmail, user.FieldMailingAddress:
+			values[i] = new(sql.NullString)
 		case user.FieldID:
 			values[i] = new(uuid.UUID)
 		default:
@@ -44,6 +61,42 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
 				u.ID = *value
+			}
+		case user.FieldStudentID:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field student_id", values[i])
+			} else if value.Valid {
+				u.StudentID = value.String
+			}
+		case user.FieldFirstname:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field firstname", values[i])
+			} else if value.Valid {
+				u.Firstname = value.String
+			}
+		case user.FieldLastname:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field lastname", values[i])
+			} else if value.Valid {
+				u.Lastname = value.String
+			}
+		case user.FieldEmail:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field email", values[i])
+			} else if value.Valid {
+				u.Email = value.String
+			}
+		case user.FieldMailingAddress:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field mailing_address", values[i])
+			} else if value.Valid {
+				u.MailingAddress = value.String
+			}
+		case user.FieldGpa:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field gpa", values[i])
+			} else if value.Valid {
+				u.Gpa = int(value.Int64)
 			}
 		}
 	}
@@ -72,7 +125,24 @@ func (u *User) Unwrap() *User {
 func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
-	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
+	builder.WriteString("student_id=")
+	builder.WriteString(u.StudentID)
+	builder.WriteString(", ")
+	builder.WriteString("firstname=")
+	builder.WriteString(u.Firstname)
+	builder.WriteString(", ")
+	builder.WriteString("lastname=")
+	builder.WriteString(u.Lastname)
+	builder.WriteString(", ")
+	builder.WriteString("email=")
+	builder.WriteString(u.Email)
+	builder.WriteString(", ")
+	builder.WriteString("mailing_address=")
+	builder.WriteString(u.MailingAddress)
+	builder.WriteString(", ")
+	builder.WriteString("gpa=")
+	builder.WriteString(fmt.Sprintf("%v", u.Gpa))
 	builder.WriteByte(')')
 	return builder.String()
 }

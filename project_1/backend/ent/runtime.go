@@ -14,6 +14,28 @@ import (
 func init() {
 	userFields := schema.User{}.Fields()
 	_ = userFields
+	// userDescEmail is the schema descriptor for email field.
+	userDescEmail := userFields[4].Descriptor()
+	// user.EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	user.EmailValidator = userDescEmail.Validators[0].(func(string) error)
+	// userDescGpa is the schema descriptor for gpa field.
+	userDescGpa := userFields[6].Descriptor()
+	// user.GpaValidator is a validator for the "gpa" field. It is called by the builders before save.
+	user.GpaValidator = func() func(int) error {
+		validators := userDescGpa.Validators
+		fns := [...]func(int) error{
+			validators[0].(func(int) error),
+			validators[1].(func(int) error),
+		}
+		return func(gpa int) error {
+			for _, fn := range fns {
+				if err := fn(gpa); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// userDescID is the schema descriptor for id field.
 	userDescID := userFields[0].Descriptor()
 	// user.DefaultID holds the default value on creation for the id field.

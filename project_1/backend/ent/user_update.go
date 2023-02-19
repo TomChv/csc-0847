@@ -27,6 +27,49 @@ func (uu *UserUpdate) Where(ps ...predicate.User) *UserUpdate {
 	return uu
 }
 
+// SetStudentID sets the "student_id" field.
+func (uu *UserUpdate) SetStudentID(s string) *UserUpdate {
+	uu.mutation.SetStudentID(s)
+	return uu
+}
+
+// SetFirstname sets the "firstname" field.
+func (uu *UserUpdate) SetFirstname(s string) *UserUpdate {
+	uu.mutation.SetFirstname(s)
+	return uu
+}
+
+// SetLastname sets the "lastname" field.
+func (uu *UserUpdate) SetLastname(s string) *UserUpdate {
+	uu.mutation.SetLastname(s)
+	return uu
+}
+
+// SetEmail sets the "email" field.
+func (uu *UserUpdate) SetEmail(s string) *UserUpdate {
+	uu.mutation.SetEmail(s)
+	return uu
+}
+
+// SetMailingAddress sets the "mailing_address" field.
+func (uu *UserUpdate) SetMailingAddress(s string) *UserUpdate {
+	uu.mutation.SetMailingAddress(s)
+	return uu
+}
+
+// SetGpa sets the "gpa" field.
+func (uu *UserUpdate) SetGpa(i int) *UserUpdate {
+	uu.mutation.ResetGpa()
+	uu.mutation.SetGpa(i)
+	return uu
+}
+
+// AddGpa adds i to the "gpa" field.
+func (uu *UserUpdate) AddGpa(i int) *UserUpdate {
+	uu.mutation.AddGpa(i)
+	return uu
+}
+
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
@@ -59,7 +102,25 @@ func (uu *UserUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (uu *UserUpdate) check() error {
+	if v, ok := uu.mutation.Email(); ok {
+		if err := user.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "User.email": %w`, err)}
+		}
+	}
+	if v, ok := uu.mutation.Gpa(); ok {
+		if err := user.GpaValidator(v); err != nil {
+			return &ValidationError{Name: "gpa", err: fmt.Errorf(`ent: validator failed for field "User.gpa": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := uu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID))
 	if ps := uu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -67,6 +128,27 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := uu.mutation.StudentID(); ok {
+		_spec.SetField(user.FieldStudentID, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Firstname(); ok {
+		_spec.SetField(user.FieldFirstname, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Lastname(); ok {
+		_spec.SetField(user.FieldLastname, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Email(); ok {
+		_spec.SetField(user.FieldEmail, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.MailingAddress(); ok {
+		_spec.SetField(user.FieldMailingAddress, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Gpa(); ok {
+		_spec.SetField(user.FieldGpa, field.TypeInt, value)
+	}
+	if value, ok := uu.mutation.AddedGpa(); ok {
+		_spec.AddField(user.FieldGpa, field.TypeInt, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, uu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -86,6 +168,49 @@ type UserUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *UserMutation
+}
+
+// SetStudentID sets the "student_id" field.
+func (uuo *UserUpdateOne) SetStudentID(s string) *UserUpdateOne {
+	uuo.mutation.SetStudentID(s)
+	return uuo
+}
+
+// SetFirstname sets the "firstname" field.
+func (uuo *UserUpdateOne) SetFirstname(s string) *UserUpdateOne {
+	uuo.mutation.SetFirstname(s)
+	return uuo
+}
+
+// SetLastname sets the "lastname" field.
+func (uuo *UserUpdateOne) SetLastname(s string) *UserUpdateOne {
+	uuo.mutation.SetLastname(s)
+	return uuo
+}
+
+// SetEmail sets the "email" field.
+func (uuo *UserUpdateOne) SetEmail(s string) *UserUpdateOne {
+	uuo.mutation.SetEmail(s)
+	return uuo
+}
+
+// SetMailingAddress sets the "mailing_address" field.
+func (uuo *UserUpdateOne) SetMailingAddress(s string) *UserUpdateOne {
+	uuo.mutation.SetMailingAddress(s)
+	return uuo
+}
+
+// SetGpa sets the "gpa" field.
+func (uuo *UserUpdateOne) SetGpa(i int) *UserUpdateOne {
+	uuo.mutation.ResetGpa()
+	uuo.mutation.SetGpa(i)
+	return uuo
+}
+
+// AddGpa adds i to the "gpa" field.
+func (uuo *UserUpdateOne) AddGpa(i int) *UserUpdateOne {
+	uuo.mutation.AddGpa(i)
+	return uuo
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -133,7 +258,25 @@ func (uuo *UserUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (uuo *UserUpdateOne) check() error {
+	if v, ok := uuo.mutation.Email(); ok {
+		if err := user.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "User.email": %w`, err)}
+		}
+	}
+	if v, ok := uuo.mutation.Gpa(); ok {
+		if err := user.GpaValidator(v); err != nil {
+			return &ValidationError{Name: "gpa", err: fmt.Errorf(`ent: validator failed for field "User.gpa": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) {
+	if err := uuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(user.Table, user.Columns, sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID))
 	id, ok := uuo.mutation.ID()
 	if !ok {
@@ -158,6 +301,27 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := uuo.mutation.StudentID(); ok {
+		_spec.SetField(user.FieldStudentID, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Firstname(); ok {
+		_spec.SetField(user.FieldFirstname, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Lastname(); ok {
+		_spec.SetField(user.FieldLastname, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Email(); ok {
+		_spec.SetField(user.FieldEmail, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.MailingAddress(); ok {
+		_spec.SetField(user.FieldMailingAddress, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Gpa(); ok {
+		_spec.SetField(user.FieldGpa, field.TypeInt, value)
+	}
+	if value, ok := uuo.mutation.AddedGpa(); ok {
+		_spec.AddField(user.FieldGpa, field.TypeInt, value)
 	}
 	_node = &User{config: uuo.config}
 	_spec.Assign = _node.assignValues

@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -17,6 +18,42 @@ type UserCreate struct {
 	config
 	mutation *UserMutation
 	hooks    []Hook
+}
+
+// SetStudentID sets the "student_id" field.
+func (uc *UserCreate) SetStudentID(s string) *UserCreate {
+	uc.mutation.SetStudentID(s)
+	return uc
+}
+
+// SetFirstname sets the "firstname" field.
+func (uc *UserCreate) SetFirstname(s string) *UserCreate {
+	uc.mutation.SetFirstname(s)
+	return uc
+}
+
+// SetLastname sets the "lastname" field.
+func (uc *UserCreate) SetLastname(s string) *UserCreate {
+	uc.mutation.SetLastname(s)
+	return uc
+}
+
+// SetEmail sets the "email" field.
+func (uc *UserCreate) SetEmail(s string) *UserCreate {
+	uc.mutation.SetEmail(s)
+	return uc
+}
+
+// SetMailingAddress sets the "mailing_address" field.
+func (uc *UserCreate) SetMailingAddress(s string) *UserCreate {
+	uc.mutation.SetMailingAddress(s)
+	return uc
+}
+
+// SetGpa sets the "gpa" field.
+func (uc *UserCreate) SetGpa(i int) *UserCreate {
+	uc.mutation.SetGpa(i)
+	return uc
 }
 
 // SetID sets the "id" field.
@@ -76,6 +113,34 @@ func (uc *UserCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (uc *UserCreate) check() error {
+	if _, ok := uc.mutation.StudentID(); !ok {
+		return &ValidationError{Name: "student_id", err: errors.New(`ent: missing required field "User.student_id"`)}
+	}
+	if _, ok := uc.mutation.Firstname(); !ok {
+		return &ValidationError{Name: "firstname", err: errors.New(`ent: missing required field "User.firstname"`)}
+	}
+	if _, ok := uc.mutation.Lastname(); !ok {
+		return &ValidationError{Name: "lastname", err: errors.New(`ent: missing required field "User.lastname"`)}
+	}
+	if _, ok := uc.mutation.Email(); !ok {
+		return &ValidationError{Name: "email", err: errors.New(`ent: missing required field "User.email"`)}
+	}
+	if v, ok := uc.mutation.Email(); ok {
+		if err := user.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "User.email": %w`, err)}
+		}
+	}
+	if _, ok := uc.mutation.MailingAddress(); !ok {
+		return &ValidationError{Name: "mailing_address", err: errors.New(`ent: missing required field "User.mailing_address"`)}
+	}
+	if _, ok := uc.mutation.Gpa(); !ok {
+		return &ValidationError{Name: "gpa", err: errors.New(`ent: missing required field "User.gpa"`)}
+	}
+	if v, ok := uc.mutation.Gpa(); ok {
+		if err := user.GpaValidator(v); err != nil {
+			return &ValidationError{Name: "gpa", err: fmt.Errorf(`ent: validator failed for field "User.gpa": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -110,6 +175,30 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if id, ok := uc.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
+	}
+	if value, ok := uc.mutation.StudentID(); ok {
+		_spec.SetField(user.FieldStudentID, field.TypeString, value)
+		_node.StudentID = value
+	}
+	if value, ok := uc.mutation.Firstname(); ok {
+		_spec.SetField(user.FieldFirstname, field.TypeString, value)
+		_node.Firstname = value
+	}
+	if value, ok := uc.mutation.Lastname(); ok {
+		_spec.SetField(user.FieldLastname, field.TypeString, value)
+		_node.Lastname = value
+	}
+	if value, ok := uc.mutation.Email(); ok {
+		_spec.SetField(user.FieldEmail, field.TypeString, value)
+		_node.Email = value
+	}
+	if value, ok := uc.mutation.MailingAddress(); ok {
+		_spec.SetField(user.FieldMailingAddress, field.TypeString, value)
+		_node.MailingAddress = value
+	}
+	if value, ok := uc.mutation.Gpa(); ok {
+		_spec.SetField(user.FieldGpa, field.TypeInt, value)
+		_node.Gpa = value
 	}
 	return _node, _spec
 }
