@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  database:
+    image: bitnami/postgresql:15.2.0
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      # source envs/database.env
+      POSTGRESQL_DATABASE: "${DB_NAME}"
+      POSTGRESQL_USER: "${DB_USER}"
+      POSTGRESQL_PASSWORD: "${DB_PASSWORD}"
+    networks:
+      - backend
+
+  backend:
+    image: csc-847/project-1-backend
+    command:
+      - "server"
+    build:
+      context: .
+    ports:
+      - "9000:9000"
+    environment:
+      DB_HOST: "database"
+      DB_PORT: "5432"
+    env_file:
+      - envs/database.env
+    networks:
+      - backend
+
+networks:
+  backend:

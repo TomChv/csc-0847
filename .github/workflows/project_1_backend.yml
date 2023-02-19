@@ -68,3 +68,25 @@ jobs:
 
       - name: Run tests
         run: go test -v -race ./...
+
+  build:
+    name: Build docker image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Checkout repository.
+        uses: actions/checkout@v3
+
+      - name: Build
+        uses: docker/build-push-action@v4
+        with:
+          push: false
+          tags: csc-847/project-1-backend
+          context: project_1/backend
+          file: project_1/backend/Dockerfile
