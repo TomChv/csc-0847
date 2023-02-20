@@ -15,6 +15,7 @@ services:
 
   backend:
     image: csc-847/project-1-backend
+    restart: always
     command:
       - "server"
     build:
@@ -26,6 +27,7 @@ services:
       DB_PORT: "5432"
     env_file:
       - envs/database.env
+      - envs/backend.env
     networks:
       - backend
 
