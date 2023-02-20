@@ -21,6 +21,7 @@ jobs:
       DB_USER: "github"
       DB_PASSWORD: "xMorPOhdQLRJ"
       DB_PROVIDER: "local"
+      BACKEND_CORS_ALL: "true"
 
     steps:
       - name: Checkout repository.
