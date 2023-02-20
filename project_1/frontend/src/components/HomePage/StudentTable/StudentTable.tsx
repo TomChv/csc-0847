@@ -1,12 +1,20 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
 import {users} from "../../../mocks/users";
 import StudentRow from "./StudentRow";
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
+import {client} from "../../../backend/client";
 
 export default function StudentTable() {
-    const usersData = users;
+    const [usersState, setUsersState] = useState(users);
+
+    useEffect(() => {
+        console.log("Fetch users...")
+        client.listUsers()
+            .then((users) => setUsersState(users))
+            .catch((e) => console.error(`could not fetch users ${e.message}`))
+    }, [])
 
     const searchUser = () => {
         console.log("Search an user")
@@ -17,7 +25,7 @@ export default function StudentTable() {
     }
 
     return (
-        <TableContainer component={Paper} sx={{ maxWidth: 1000 }}>
+        <TableContainer component={Paper} sx={{maxWidth: 1000}}>
             <Table sx={{minWidth: 700}} aria-label="student table">
                 <TableHead>
                     <TableRow>
@@ -40,7 +48,7 @@ export default function StudentTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {usersData.map((user) => (<StudentRow user={user} key={user.id}/>))}
+                    {usersState.map((user) => (<StudentRow user={user} key={user.id}/>))}
                 </TableBody>
             </Table>
         </TableContainer>
