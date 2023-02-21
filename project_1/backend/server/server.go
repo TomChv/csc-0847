@@ -20,7 +20,7 @@ func New(c *db.Client) *Server {
 	corsConfig := cors.Config{
 		AllowAllOrigins:  allowAllOrigin,
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"},
-		AllowHeaders:     []string{"Origin"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Content-Length"},
 		ExposeHeaders:    []string{"Content-Length", "Content-Type"},
 		AllowCredentials: false,
 	}
