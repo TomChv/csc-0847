@@ -8,9 +8,9 @@ on:
       - project_1/**/*
 
 jobs:
-  push-image:
+  push-backend:
     # Based on https://gist.github.com/palewire/12c4b2b974ef735d22da7493cf7f4d37
-    name: Build & Push image to Gcloud Artifact Registry
+    name: Build & Push backend to Gcloud Artifact Registry
     runs-on: ubuntu-latest
 
     permissions:
@@ -43,3 +43,39 @@ jobs:
           tags: us-central1-docker.pkg.dev/${{ secrets.GCLOUD_PROJECT_1_ID }}/registry/backend:latest
           context: project_1/backend
           file: project_1/backend/Dockerfile
+
+  push-frontend:
+    # Based on https://gist.github.com/palewire/12c4b2b974ef735d22da7493cf7f4d37
+    name: Build & Push frontend to Gcloud Artifact Registry
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: Checkout repository.
+        uses: actions/checkout@v3
+
+      - name: Auth to Gcloud
+        id: gcloud-auth
+        uses: google-github-actions/auth@v1
+        with:
+          token_format: access_token
+          workload_identity_provider: ${{ secrets.GCLOUD_PROJECT_1_REGISTRY_PROVIDER_ID }}
+          service_account: ${{ secrets.GCLOUD_PROJECT_1_REGISTRY_SERVICE_ACCOUNT }}@${{ secrets.GCLOUD_PROJECT_1_ID }}.iam.gserviceaccount.com
+
+      - name: Login to Artifact Registry
+        uses: docker/login-action@v2
+        with:
+          registry: us-central1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.gcloud-auth.outputs.access_token }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: us-central1-docker.pkg.dev/${{ secrets.GCLOUD_PROJECT_1_ID }}/registry/frontend:latest
+          context: project_1/frontend
+          file: project_1/frontend/Dockerfile
