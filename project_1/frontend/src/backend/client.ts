@@ -19,6 +19,7 @@ class BackendClient {
     }
 
     async createUser(data: Omit<User, 'id'>): Promise<void> {
+        console.log(data)
         await this.client.post("/users", data)
     }
 

@@ -1,16 +1,22 @@
-import {TableCell, TableRow} from "@mui/material";
+import {IconButton, TableCell, TableRow} from "@mui/material";
 import {User} from "../../../types/user";
 import React from "react";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import {client} from "../../../backend/client";
 
 export interface StudentRowParam {
     user: User
+    update: boolean
+    setUpdate: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default function StudentRow({user}: StudentRowParam) {
+export default function StudentRow({user, update, setUpdate}: StudentRowParam) {
     const deleteUser = () => {
         console.log(`Delete ${user.id}`)
+
+        client.deleteUser(user.id)
+            .then(() => setUpdate(!update));
     }
 
     const editUser = () => {
@@ -26,14 +32,14 @@ export default function StudentRow({user}: StudentRowParam) {
             <TableCell align="left">{user.mailing_address}</TableCell>
             <TableCell align="left">{user.gpa}</TableCell>
             <TableCell align="left">
-                <div onClick={editUser}>
+                <IconButton onClick={editUser}>
                     <EditIcon/>
-                </div>
+                </IconButton>
             </TableCell>
             <TableCell align="left">
-                <div onClick={deleteUser}>
+                <IconButton onClick={deleteUser}>
                     <DeleteIcon/>
-                </div>
+                </IconButton>
             </TableCell>
         </TableRow>
     )
